@@ -1,15 +1,14 @@
 const delayInMs = 1000;
 const delay = value => new Promise(f => setTimeout(() => f(value), delayInMs));
 
-const wrapThenable = thenable => ({
-    then: f => SlowPromise.resolve(thenable.then(f))
+const wrapPromise = promise => ({
+    then: f => wrapPromise(promise.then(delay).then(f))
 });
 
 const SlowPromise = function(resolver) {
-    const p = new Promise(resolver);
-    return wrapThenable(p.then(delay));
+    return wrapPromise(new Promise(resolver));
 };
 
-SlowPromise.resolve = v => wrapThenable(Promise.resolve(v).then(delay));
+SlowPromise.resolve = v => wrapPromise(Promise.resolve(v));
 
 module.exports.SlowPromise = SlowPromise;
