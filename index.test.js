@@ -35,6 +35,16 @@ describe("slow-promise", () => {
         expect(spy).toHaveBeenCalled();
     });
 
+    it("calls a callback with value", async () => {
+        const p = new SlowPromise(f => f(42));
+        p.then(spy);
+
+        await processNextPromiseChain();
+        jasmine.clock().tick(1000);
+        await processNextPromiseChain();
+        expect(spy).toHaveBeenCalledWith(42);
+    });
+
     it("does not call callback if not fulfilled", async () => {
         const p = new SlowPromise(() => {});
         p.then(spy);
@@ -64,6 +74,16 @@ describe("slow-promise", () => {
             jasmine.clock().tick(1000);
             await processNextPromiseChain();
             expect(spy).toHaveBeenCalled();
+        });
+
+        it("resolves a promise with value", async () => {
+            const p = SlowPromise.resolve(Promise.resolve(42));
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalledWith(42);
         });
     });
 });
