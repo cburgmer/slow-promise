@@ -8,7 +8,7 @@ describe("slow-promise", () => {
         jasmine.clock().install();
     });
 
-    afterEach(function() {
+    afterEach(() => {
         jasmine.clock().uninstall();
     });
 
