@@ -1,5 +1,6 @@
-module.exports.SlowPromise = function (fulfill) {
+module.exports.SlowPromise = function (resolver) {
+    const p = new Promise(resolver);
     return {
-        then: f => f()
+        then: f => p.then(f)
     };
 };
