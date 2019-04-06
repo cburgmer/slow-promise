@@ -1,6 +1,6 @@
-const { SlowPromise } = require('./index');
+const { SlowPromise } = require("./index");
 
-describe('slow-promise', () => {
+describe("slow-promise", () => {
     let spy;
 
     beforeEach(() => {
@@ -12,9 +12,10 @@ describe('slow-promise', () => {
         jasmine.clock().uninstall();
     });
 
-    const processNextPromiseChain = async () => new Promise(f => setImmediate(f));
+    const processNextPromiseChain = async () =>
+        new Promise(f => setImmediate(f));
 
-    it('does not fulfill if timeout hasn\'t occurred yet', async () => {
+    it("does not fulfill if timeout hasn't occurred yet", async () => {
         const p = new SlowPromise(f => f());
         p.then(spy);
 
@@ -24,7 +25,7 @@ describe('slow-promise', () => {
         expect(spy).not.toHaveBeenCalled();
     });
 
-    it('calls a callback after timeout has occurred', async () => {
+    it("calls a callback after timeout has occurred", async () => {
         const p = new SlowPromise(f => f());
         p.then(spy);
 
@@ -34,7 +35,7 @@ describe('slow-promise', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('does not call callback if not fulfilled', async () => {
+    it("does not call callback if not fulfilled", async () => {
         const p = new SlowPromise(() => {});
         p.then(spy);
 
