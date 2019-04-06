@@ -5,34 +5,42 @@ describe('slow-promise', () => {
 
     beforeEach(() => {
         spy = jasmine.createSpy();
+        jasmine.clock().install();
     });
 
-    it('does not fulfill if timeout hasn\'t occurred yet', done => {
+    afterEach(function() {
+        jasmine.clock().uninstall();
+    });
+
+    const processNextPromiseChain = async () => new Promise(f => setImmediate(f));
+
+    it('does not fulfill if timeout hasn\'t occurred yet', async () => {
         const p = new SlowPromise(f => f());
         p.then(spy);
 
-        setTimeout(() => {
-            expect(spy).not.toHaveBeenCalled();
-            done();
-        }, 900);
+        await processNextPromiseChain();
+        jasmine.clock().tick(999);
+        await processNextPromiseChain();
+        expect(spy).not.toHaveBeenCalled();
     });
 
-    it('calls a callback after timeout has occurred', done => {
+    it('calls a callback after timeout has occurred', async () => {
         const p = new SlowPromise(f => f());
         p.then(spy);
 
-        setTimeout(() => {
-            expect(spy).toHaveBeenCalled();
-            done();
-        }, 1100);
+        await processNextPromiseChain();
+        jasmine.clock().tick(1000);
+        await processNextPromiseChain();
+        expect(spy).toHaveBeenCalled();
     });
 
-    it('does not call callback if not fulfilled', done => {
+    it('does not call callback if not fulfilled', async () => {
         const p = new SlowPromise(() => {});
         p.then(spy);
-        setTimeout(() => {
-            expect(spy).not.toHaveBeenCalled();
-            done();
-        }, 1100);
+
+        await processNextPromiseChain();
+        jasmine.clock().tick(1000);
+        await processNextPromiseChain();
+        expect(spy).not.toHaveBeenCalled();
     });
 });
