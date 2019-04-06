@@ -1,0 +1,18 @@
+{
+  "name": "slow-promise",
+  "version": "0.1.0",
+  "description": "Slow down your promises",
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine tests.js"
+  },
+  "keywords": [
+    "promise",
+    "testing"
+  ],
+  "author": "",
+  "license": "BSD-2-Clause",
+  "devDependencies": {
+    "jasmine": "^3.4.0"
+  }
+}
