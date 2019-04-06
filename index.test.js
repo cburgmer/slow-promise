@@ -44,4 +44,26 @@ describe("slow-promise", () => {
         await processNextPromiseChain();
         expect(spy).not.toHaveBeenCalled();
     });
+
+    describe(".resolve()", () => {
+        it("does not fulfill if timeout hasn't occurred yet", async () => {
+            const p = SlowPromise.resolve();
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(999);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("calls a callback after timeout has occurred", async () => {
+            const p = SlowPromise.resolve();
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalled();
+        });
+    });
 });
