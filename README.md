@@ -1,5 +1,5 @@
 # slow-promise
-Slow-Promise gives you ES6 promises in less than 20 LOC and 700 bytes (not even minified).
+Slow-Promise gives you ES6 promises in roughly 20 LOC and 900 bytes (not even minified).
 
 Its downsides are
 
