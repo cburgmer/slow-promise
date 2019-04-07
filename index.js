@@ -2,7 +2,8 @@ const delayInMs = 1000;
 const delay = value => new Promise(f => setTimeout(() => f(value), delayInMs));
 
 const wrapPromise = promise => ({
-    then: (f, r) => wrapPromise(promise.finally(delay).then(f, r))
+    then: (f, r) => wrapPromise(promise.finally(delay).then(f, r)),
+    catch: r => wrapPromise(promise.finally(delay).catch(r))
 });
 
 const SlowPromise = function(resolver) {

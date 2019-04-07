@@ -97,6 +97,72 @@ describe("slow-promise", () => {
         });
     });
 
+    describe(".catch()", () => {
+        it("does not call the callback if timeout hasn't occurred yet", async () => {
+            const p = new SlowPromise((f, r) => r());
+            p.catch(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(999);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("calls a callback after timeout has occurred", async () => {
+            const p = new SlowPromise((f, r) => r());
+            p.catch(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalled();
+        });
+
+        it("does not call callback if not settled", async () => {
+            const p = new SlowPromise(() => {});
+            p.catch(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("does not call callback if fulfilled", async () => {
+            const p = new SlowPromise(f => f());
+            p.catch(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("does not call the next leg of the promise chain if the timeout hasn't occurred yet", async () => {
+            const p = new SlowPromise((f, r) => r());
+            p.catch(() => {}).then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            jasmine.clock().tick(999);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("calls the next leg of the promise chain if the timeout has occurred", async () => {
+            const p = new SlowPromise((f, r) => r());
+            p.catch(() => {}).then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+
     describe(".resolve()", () => {
         it("does not fulfill if timeout hasn't occurred yet", async () => {
             const p = SlowPromise.resolve();
