@@ -1,18 +1,21 @@
 <meta charset="utf-8"/>
+
+<script data-slow-promise-delay="2000" src="dist/slow-promise.install.js"></script>
+
+<script>
+ const log = msg => {
+     const c = document.querySelector("#console");
+     c.innerText = c.innerText.trim() + "\n" + msg;
+ }
+</script>
 <body>
-    <script data-slow-promise-delay="2000" src="dist/slow-promise.install.js"></script>
     <h4>The code</h4>
-    <script>
-     const log = msg => {
-         const c = document.querySelector("#console");
-         c.innerText = c.innerText.trim() + "\n" + msg;
-     }
-    </script>
     <script style="display: block; white-space: pre; font-family: monospace;">
      Promise.resolve()
             .then(() => log("1st then() executed"))
             .then(() => log("2nd then() executed"));
     </script>
+
     <h4>The output</h4>
     <pre id="console">
 Starting...
