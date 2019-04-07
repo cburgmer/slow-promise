@@ -1,5 +1,5 @@
 const delayInMs = 1000;
-const delay = () => new Promise(f => setTimeout(() => f(), delayInMs));
+const delay = () => new Promise(f => setTimeout(f, delayInMs));
 
 const wrapPromise = promise => ({
     then: (f, r) => wrapPromise(promise.finally(delay).then(f, r)),

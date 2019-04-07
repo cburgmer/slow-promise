@@ -383,7 +383,10 @@ describe("slow-promise", () => {
         });
 
         it("resolves with the list of values", async () => {
-            const p = SlowPromise.all([Promise.resolve(21), Promise.resolve(42)]);
+            const p = SlowPromise.all([
+                Promise.resolve(21),
+                Promise.resolve(42)
+            ]);
             p.then(spy);
 
             await processNextPromiseChain();
@@ -393,7 +396,10 @@ describe("slow-promise", () => {
         });
 
         it("does not call the callback if one promise hasn't been settled yet", async () => {
-            const p = SlowPromise.all([new Promise(() => {}), Promise.resolve(42)]);
+            const p = SlowPromise.all([
+                new Promise(() => {}),
+                Promise.resolve(42)
+            ]);
             p.then(spy);
 
             await processNextPromiseChain();
@@ -425,7 +431,10 @@ describe("slow-promise", () => {
         });
 
         it("resolves with the value of the settled promise", async () => {
-            const p = SlowPromise.race([new Promise(() => {}), Promise.resolve(42)]);
+            const p = SlowPromise.race([
+                new Promise(() => {}),
+                Promise.resolve(42)
+            ]);
             p.then(spy);
 
             await processNextPromiseChain();
@@ -435,7 +444,10 @@ describe("slow-promise", () => {
         });
 
         it("does not call the callback if none of the promises has been settled yet", async () => {
-            const p = SlowPromise.race([new Promise(() => {}), new Promise(() => {})]);
+            const p = SlowPromise.race([
+                new Promise(() => {}),
+                new Promise(() => {})
+            ]);
             p.then(spy);
 
             await processNextPromiseChain();
