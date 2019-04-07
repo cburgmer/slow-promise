@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jasmine *.test.js",
     "prettier": "prettier --write --tab-width 4 *.js",
-    "lint": "jshint *.js"
+    "lint": "jshint *.js",
+    "dist": "browserify install_global.js -o dist/slow-promise.install.js"
   },
   "keywords": [
     "promise",
@@ -15,6 +16,7 @@
   "author": "",
   "license": "Apache-2.0",
   "devDependencies": {
+    "browserify": "^16.2.3",
     "jasmine": "^3.4.0",
     "jshint": "^2.10.2",
     "prettier": "^1.16.4"

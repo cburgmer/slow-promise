@@ -1,5 +1,6 @@
 const delayInMs = 1000;
-const delay = () => new Promise(f => setTimeout(f, delayInMs));
+const NativePromise = Promise; // this will allow us to install SlowPromise in place of the native Promise implementation
+const delay = () => new NativePromise(f => setTimeout(f, delayInMs));
 
 const wrapPromise = promise => ({
     then: (f, r) => wrapPromise(promise.finally(delay).then(f, r)),
@@ -8,12 +9,12 @@ const wrapPromise = promise => ({
 });
 
 const SlowPromise = function(resolver) {
-    return wrapPromise(new Promise(resolver));
+    return wrapPromise(new NativePromise(resolver));
 };
 
-SlowPromise.resolve = v => wrapPromise(Promise.resolve(v));
-SlowPromise.reject = e => wrapPromise(Promise.reject(e));
-SlowPromise.all = l => wrapPromise(Promise.all(l));
-SlowPromise.race = l => wrapPromise(Promise.race(l));
+SlowPromise.resolve = v => wrapPromise(NativePromise.resolve(v));
+SlowPromise.reject = e => wrapPromise(NativePromise.reject(e));
+SlowPromise.all = l => wrapPromise(NativePromise.all(l));
+SlowPromise.race = l => wrapPromise(NativePromise.race(l));
 
 module.exports.SlowPromise = SlowPromise;
