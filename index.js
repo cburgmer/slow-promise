@@ -2,7 +2,7 @@ const delayInMs = 1000;
 const delay = value => new Promise(f => setTimeout(() => f(value), delayInMs));
 
 const wrapPromise = promise => ({
-    then: f => wrapPromise(promise.then(delay).then(f))
+    then: (f, r) => wrapPromise(promise.finally(delay).then(f, r))
 });
 
 const SlowPromise = function(resolver) {
@@ -10,5 +10,6 @@ const SlowPromise = function(resolver) {
 };
 
 SlowPromise.resolve = v => wrapPromise(Promise.resolve(v));
+SlowPromise.reject = () => wrapPromise(Promise.reject());
 
 module.exports.SlowPromise = SlowPromise;

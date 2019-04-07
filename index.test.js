@@ -150,4 +150,50 @@ describe("slow-promise", () => {
             expect(spy).toHaveBeenCalledWith(42);
         });
     });
+
+    describe(".reject()", () => {
+        it("does not call the reject callback if timeout hasn't occurred yet", async () => {
+            const p = SlowPromise.reject();
+            p.then(null, spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(999);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("calls the reject callback after timeout has occurred", async () => {
+            const p = SlowPromise.reject();
+            p.then(null, spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalled();
+        });
+
+        it("does not call the next leg of the promise chain if the timeout hasn't occurred yet", async () => {
+            const p = SlowPromise.reject();
+            p.then(null, () => {}).then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            jasmine.clock().tick(999);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("calls the next leg of the promise chain if the timeout has occurred", async () => {
+            const p = SlowPromise.reject();
+            p.then(null, () => {}).then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalled();
+        });
+    });
 });
