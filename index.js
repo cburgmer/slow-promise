@@ -13,5 +13,7 @@ const SlowPromise = function(resolver) {
 
 SlowPromise.resolve = v => wrapPromise(Promise.resolve(v));
 SlowPromise.reject = e => wrapPromise(Promise.reject(e));
+SlowPromise.all = l => wrapPromise(Promise.all(l));
+SlowPromise.race = l => wrapPromise(Promise.race(l));
 
 module.exports.SlowPromise = SlowPromise;

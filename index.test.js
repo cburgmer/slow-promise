@@ -360,4 +360,88 @@ describe("slow-promise", () => {
             expect(spy).toHaveBeenCalledWith(new Error("blargh"));
         });
     });
+
+    describe(".all()", () => {
+        it("does not call the callback if timeout hasn't occurred yet", async () => {
+            const p = SlowPromise.all([]);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(999);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("calls the callback after timeout has occurred", async () => {
+            const p = SlowPromise.all([]);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalled();
+        });
+
+        it("resolves with the list of values", async () => {
+            const p = SlowPromise.all([Promise.resolve(21), Promise.resolve(42)]);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalledWith([21, 42]);
+        });
+
+        it("does not call the callback if one promise hasn't been settled yet", async () => {
+            const p = SlowPromise.all([new Promise(() => {}), Promise.resolve(42)]);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+    });
+
+    describe(".race()", () => {
+        it("does not call the callback if timeout hasn't occurred yet", async () => {
+            const p = SlowPromise.race([Promise.resolve(42)]);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(999);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("calls the callback after timeout has occurred", async () => {
+            const p = SlowPromise.race([Promise.resolve(42)]);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalled();
+        });
+
+        it("resolves with the value of the settled promise", async () => {
+            const p = SlowPromise.race([new Promise(() => {}), Promise.resolve(42)]);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalledWith(42);
+        });
+
+        it("does not call the callback if none of the promises has been settled yet", async () => {
+            const p = SlowPromise.race([new Promise(() => {}), new Promise(() => {})]);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+    });
 });
