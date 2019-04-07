@@ -1,5 +1,7 @@
-const delayInMs = 1000;
 const NativePromise = Promise; // this will allow us to install SlowPromise in place of the native Promise implementation
+
+let delayInMs = 1000;
+module.exports.setSlowPromiseDelay = delay => (delayInMs = delay);
 const delay = () => new NativePromise(f => setTimeout(f, delayInMs));
 
 const wrapPromise = promise => ({
