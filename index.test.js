@@ -140,6 +140,16 @@ describe("slow-promise", () => {
             expect(spy).toHaveBeenCalled();
         });
 
+        it("resolves with value", async () => {
+            const p = SlowPromise.resolve(42);
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalledWith(42);
+        });
+
         it("resolves a promise with value", async () => {
             const p = SlowPromise.resolve(Promise.resolve(42));
             p.then(spy);
@@ -194,6 +204,16 @@ describe("slow-promise", () => {
             jasmine.clock().tick(1000);
             await processNextPromiseChain();
             expect(spy).toHaveBeenCalled();
+        });
+
+        it("rejects with value", async () => {
+            const p = SlowPromise.reject(new Error("blargh"));
+            p.then(null, spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalledWith(new Error("blargh"));
         });
     });
 });

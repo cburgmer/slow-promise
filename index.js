@@ -10,6 +10,6 @@ const SlowPromise = function(resolver) {
 };
 
 SlowPromise.resolve = v => wrapPromise(Promise.resolve(v));
-SlowPromise.reject = () => wrapPromise(Promise.reject());
+SlowPromise.reject = e => wrapPromise(Promise.reject(e));
 
 module.exports.SlowPromise = SlowPromise;
