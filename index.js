@@ -3,7 +3,8 @@ const delay = () => new Promise(f => setTimeout(() => f(), delayInMs));
 
 const wrapPromise = promise => ({
     then: (f, r) => wrapPromise(promise.finally(delay).then(f, r)),
-    catch: r => wrapPromise(promise.finally(delay).catch(r))
+    catch: r => wrapPromise(promise.finally(delay).catch(r)),
+    finally: c => wrapPromise(promise.finally(delay).finally(c))
 });
 
 const SlowPromise = function(resolver) {
