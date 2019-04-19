@@ -6,6 +6,10 @@ Its downsides are
 * it's slow,
 * it relies on another Promise implementation being present doing the hard work.
 
+## Example
+
+Slow-Promise surfacing a flaky test in Puppeteer: [./examples/puppeteer/](./examples/puppeteer/)
+
 ## Why?
 
 The author wants to make browser testing a better experience, most prominently
