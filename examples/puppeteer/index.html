@@ -1,0 +1,18 @@
+<meta charset="utf-8"/>
+<script>
+ function get_response() {
+     Promise.resolve(fetch('/response.json'))
+            .then(r => r.json())
+            .then(m => {
+                const target = document.querySelector('#target');
+                target.innerText = m.message;
+            });
+ }
+</script>
+<body>
+    This page runs some AJAX.
+
+    <button onclick="get_response()">Click me!</button>
+
+    <div id="target"></div>
+</body>
