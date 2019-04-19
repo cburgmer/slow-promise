@@ -1,4 +1,4 @@
-const { SlowPromise, setSlowPromiseDelay } = require("./index");
+const { SlowPromise, setDelay } = require("./index");
 
 window.Promise = SlowPromise;
 
@@ -8,6 +8,8 @@ if (document.currentScript) {
     );
     if (delayStr !== null) {
         const delay = parseInt(delayStr, 10);
-        setSlowPromiseDelay(delay);
+        setDelay(delay);
     }
 }
+
+module.exports.setDelay = setDelay;

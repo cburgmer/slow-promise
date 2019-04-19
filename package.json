@@ -8,7 +8,7 @@
     "test": "jasmine *.test.js",
     "prettier": "prettier --write --tab-width 4 *.js",
     "lint": "jshint *.js",
-    "dist": "browserify install_global.js --browserField false -o dist/slow-promise.install.js"
+    "dist": "browserify install_global.js --browserField false -s SlowPromise -o dist/slow-promise.install.js"
   },
   "keywords": [
     "promise",
