@@ -1,8 +1,10 @@
 ## Demo with Puppeteer
 
-This demos a flaky test written against Chrome using Puppeteer (https://github.com/GoogleChrome/puppeteer).
+This demos a flaky test written against Chrome using Puppeteer
+(https://github.com/GoogleChrome/puppeteer).
 
-The HTML page implements a button that fetches content via an asynchronous AJAX request on click.
+The HTML page implements a button that fetches content via an asynchronous AJAX
+request on click.
 
 See for yourself
 
@@ -23,7 +25,8 @@ This works if your network connection is fast enough, try it
 
     node bad_test.js
 
-This might just work well in most cases, but is likely to even be flaky when run against localhost.
+This might just work well in most cases, but is likely to even be flaky when run
+against localhost (you can try running it multiple times).
 
 The better test looks like this:
 
@@ -39,10 +42,13 @@ Run the stable test:
 
     node good_test.js
 
-This should run much slower, as slow-promise has injected latency:
+This should run much slower, as slow-promise has injected latency to force the
+test to always fail:
 
 ``` js
 page.on('load', async () => {
     await page.addScriptTag({url: '/node_modules/slow-promise/dist/slow-promise.install.js'});
 });
 ```
+
+If you want, remove the `waitFor()` to see the test now constantly failing.
