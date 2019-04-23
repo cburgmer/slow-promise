@@ -1,4 +1,6 @@
 const NativePromise = Promise; // this will allow us to install SlowPromise in place of the native Promise implementation
+let nativeFetch = window.fetch;
+module.exports.mockFetch = (mockFetch) => nativeFetch = mockFetch;
 
 let delayInMs = 1000;
 module.exports.setDelay = delay => (delayInMs = delay);
@@ -19,4 +21,7 @@ SlowPromise.reject = e => wrapPromise(NativePromise.reject(e));
 SlowPromise.all = l => wrapPromise(NativePromise.all(l));
 SlowPromise.race = l => wrapPromise(NativePromise.race(l));
 
+const slowFetch = (...args) => wrapPromise(nativeFetch.apply(window, args));
+
 module.exports.SlowPromise = SlowPromise;
+module.exports.slowFetch = slowFetch;

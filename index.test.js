@@ -1,4 +1,7 @@
-const { SlowPromise } = require("./index");
+global.window = {};
+const fetchMock = require('fetch-mock');
+
+const { SlowPromise, slowFetch, mockFetch } = require("./index");
 
 describe("slow-promise", () => {
     let spy;
@@ -454,6 +457,51 @@ describe("slow-promise", () => {
             jasmine.clock().tick(1000);
             await processNextPromiseChain();
             expect(spy).not.toHaveBeenCalled();
+        });
+    });
+
+    describe("fetch", () => {
+        let sandboxFetch;
+        beforeEach(() => {
+            sandboxFetch = fetchMock.sandbox();
+            mockFetch(sandboxFetch);
+            sandboxFetch.mock('*', 200);
+        });
+        afterEach(() => {
+            sandboxFetch.reset();
+        });
+
+        it("does not call the callback if timeout hasn't occurred yet", async () => {
+            const p = slowFetch('http://localhost:65432/blargh');
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(999);
+            await processNextPromiseChain();
+            expect(spy).not.toHaveBeenCalled();
+        });
+
+        it("calls the callback after timeout has occurred", async () => {
+            const p = slowFetch('http://localhost:65432/blargh');
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+            expect(spy).toHaveBeenCalled();
+        });
+
+        it("returns the response", async () => {
+            const p = slowFetch('http://localhost:65432/blargh');
+            p.then(spy);
+
+            await processNextPromiseChain();
+            jasmine.clock().tick(1000);
+            await processNextPromiseChain();
+
+            const args = spy.calls.mostRecent().args;
+            expect(args.length).toBe(1);
+            expect(args[0].status).toBe(200);
         });
     });
 });

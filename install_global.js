@@ -1,6 +1,7 @@
-const { SlowPromise, setDelay } = require("./index");
+const { SlowPromise, slowFetch, setDelay } = require("./index");
 
 window.Promise = SlowPromise;
+window.fetch = slowFetch;
 
 if (document.currentScript) {
     const delayStr = document.currentScript.getAttribute(
