@@ -1,6 +1,6 @@
 {
   "name": "slow-promise",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Slow down your promises",
   "main": "index.js",
   "browser": "dist/slow-promise.install.js",
